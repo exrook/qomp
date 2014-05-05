@@ -2,6 +2,13 @@ QOMP Protocol
 =============
 -------------
 
+Types
+-----
+ * `Version`  - A protocol version
+ * `Program`  - Tells the client how to compute work units
+ * `WorkUnit` - Describres a chunk of work to be computed by the client
+ * `DataUnit` - The result of running a WorkUnit
+
 Packet Structure
 ----------------
 All packets are transmitted as JSON encoded strings over TCP
@@ -9,10 +16,19 @@ All packets are transmitted as JSON encoded strings over TCP
 ### Common Fields ###
 Fields present in every packet
 
-* `type` - Packet type, determines the rest of the packet's contents
+* `ID` - Packet ID, determines the rest of the packet's contents
+
+### Specific Fields ###
+Fields that are only sent if they are used by the specific packet type
+
+* `Ver`  - Version,  used by the handshake packets
+* `Prog` - Program,  specifies which program/computation to run
+* `Rate` - uint32,   used when returning benchmark results, work per minute
+* `Work` - WorkUnit, used when sending loads to clients
+* `Data` - DataUnit, used when sending data from clients
 
 ### Packet Types ###
-In general, even types are sent by the client, odd are sent by the server
+In general, even IDs are sent by the client, odd are sent by the server
 
  * [`0x00`](#0x00) - Reserved
  * [`0x01`](#0x01) - Initiate Handshake
@@ -29,29 +45,37 @@ In general, even types are sent by the client, odd are sent by the server
  * [`0x0C`](#0x0C) - Job Complete
  * [`0x0D`](#0x0D) - Work Unit Rejected
 
+### Packet Overviews ###
 #### <a name="0x00"></a>0x00 ####
 Reserved for future use
 #### <a name="0x01"></a>0x01 ####
+ * Ver Version
 Initiates a connection with the server
 #### <a name="0x02"></a>0x02 ####
+ * Ver Version
 Indicates the server is ready and finishes the handshake
 #### <a name="0x03"></a>0x03 ####
 Requests the server to provide information regarding the current program/computation
 #### <a name="0x04"></a>0x04 ####
+ * Prog Program
 Responds to the client with information about the current program/computation
 #### <a name="0x05"></a>0x05 ####
 Indicates that the client would like to begin the benchmarking process so that it can then begin recieving workunits
 #### <a name="0x06"></a>0x06 ####
+ * Work WorkUnit
 Responds to the client with a workunit that is to be used as a benchmark
 #### <a name="0x07"></a>0x07 ####
+ * Rate uint32
 Returns the results of the benchmark to the server, which then begins sending apropriately sized workunits
 #### <a name="0x08"></a>0x08 ####
 Reserved for future use
 #### <a name="0x09"></a>0x09 ####
 Sent if the client has been previously benchmarked to indicate it would like to begin recieving packets
 #### <a name="0x0A"></a>0x0A ####
+ * Work WorkUnit
 Sends a workunit to the client
 #### <a name="0x0B"></a>0x0B ####
+ * Data DataUnit
 Sends results of a computation back to the server
 #### <a name="0x0C"></a>0x0C ####
 Sent to client once no more work units are avalible

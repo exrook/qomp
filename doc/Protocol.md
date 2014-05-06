@@ -50,22 +50,27 @@ In general, even IDs are sent by the client, odd are sent by the server
 Reserved for future use
 #### <a name="0x01"></a>0x01 ####
  * Ver Version
+
 Initiates a connection with the server
 #### <a name="0x02"></a>0x02 ####
  * Ver Version
+
 Indicates the server is ready and finishes the handshake
 #### <a name="0x03"></a>0x03 ####
 Requests the server to provide information regarding the current program/computation
 #### <a name="0x04"></a>0x04 ####
  * Prog Program
+
 Responds to the client with information about the current program/computation
 #### <a name="0x05"></a>0x05 ####
 Indicates that the client would like to begin the benchmarking process so that it can then begin recieving workunits
 #### <a name="0x06"></a>0x06 ####
  * Work WorkUnit
+
 Responds to the client with a workunit that is to be used as a benchmark
 #### <a name="0x07"></a>0x07 ####
  * Rate uint32
+
 Returns the results of the benchmark to the server, which then begins sending apropriately sized workunits
 #### <a name="0x08"></a>0x08 ####
 Reserved for future use
@@ -73,9 +78,11 @@ Reserved for future use
 Sent if the client has been previously benchmarked to indicate it would like to begin recieving packets
 #### <a name="0x0A"></a>0x0A ####
  * Work WorkUnit
+
 Sends a workunit to the client
 #### <a name="0x0B"></a>0x0B ####
  * Data DataUnit
+
 Sends results of a computation back to the server
 #### <a name="0x0C"></a>0x0C ####
 Sent to client once no more work units are avalible

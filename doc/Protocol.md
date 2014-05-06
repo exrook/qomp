@@ -11,7 +11,7 @@ Types
 
 Packet Structure
 ----------------
-All packets are transmitted as JSON encoded strings over TCP
+All packets are transmitted as JSON encoded strings over TCP (default port 7248). Any invalid packets will be ignored while malformed packets will result in the connection being dropped
 
 ### Common Fields ###
 Fields present in every packet

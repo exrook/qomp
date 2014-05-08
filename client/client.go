@@ -5,10 +5,16 @@ import (
   "log"
   "net"
   "encoding/json"
+  "flag"
 )
 
 func main() {
-  raddr, err := net.ResolveTCPAddr("tcp","127.0.0.1:7248")
+  b := flag.Int("b",100,"How many numbers to grab at a time")
+  rhost := flag.Arg(0)
+  if rhost == "" {
+    rhost = "127.0.0.1:7248"
+  }
+  raddr, err := net.ResolveTCPAddr("tcp",rhost)
   c, err := net.DialTCP("tcp", nil, raddr)
   if err != nil {
     log.Fatalln("Error connecting:", err)
@@ -19,7 +25,7 @@ func main() {
   prog := progGet(e,d)
   bench := benchGet(e,d)
   getFunc(prog)(bench)
-  benchSend(e,10)
+  benchSend(e,uint32(*b))
   for {
     sendData(e,getFunc(prog)(getWork(d)))
   }
@@ -62,11 +68,16 @@ func getFunc(prog qomp.Program) func(qomp.WorkUnit)(qomp.DataUnit) {
 }
 
 func square(w qomp.WorkUnit) qomp.DataUnit {
-  out := make([]int32,w.End-w.Start)
-  for i:= w.Start;i < w.End;i=i+1 {
-    out[i-w.Start] = int32(i*(i/2))
+  start, e := w.Data["Start"].(int32)
+  end, e := w.Data["End"].(int32)
+  if !e {
+    start, end = 0,100
   }
-  return qomp.DataUnit{ID:w.ID, Values: out}
+  out := make([]int32,end-start)
+  for i:= start;i < end;i=i+1 {
+    out[i-start] = int32(i*i)
+  }
+  return qomp.DataUnit{ID:w.ID, Data: map[string]interface{}{"squares": out},}
 }
 
 func benchSend(e *json.Encoder, rate uint32) {

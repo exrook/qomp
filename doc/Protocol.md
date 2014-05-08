@@ -4,10 +4,30 @@ QOMP Protocol
 
 Types
 -----
- * `Version`  - A protocol version
- * `Program`  - Tells the client how to compute work units
- * `WorkUnit` - Describres a chunk of work to be computed by the client
- * `DataUnit` - The result of running a WorkUnit
+ * [`Version`](#Version)   - A protocol version
+ * [`Program`](#Program)   - Tells the client how to compute work units
+ * [`WorkUnit`](#WorkUnit) - Describres a chunk of work to be computed by the client
+ * [`DataUnit`](#DataUnit) - The result of running a WorkUnit
+
+### Type Overview ###
+
+#### <a name="Version"></a>Version ####
+ * `Major uint8` - Major Revison
+ * `Minor uint8` - Minor Revision
+ * `Patch uint8` - Patch Number
+ 
+Details the protocol version, used to verify client/server compatibility. Major revisions denote major protocol changes, while minor revisions denote minor incompatibilities, and patch releases are always compatible
+
+#### <a name="Program"></a>Program ####
+ * `ID uint16` - ID number used to identify each valid program
+
+#### <a name="WorkUnit"></a>WorkUnit ####
+ * `ID uint16` - ID number unique to each WorkUnit, this same id should be used in the response
+ * `Data map[string]interface{}` - Used to store application data to be sent to nodes
+
+#### <a name="DataUnit"></a>DataUnit ####
+ * `ID uint16` - Used to correlate WorkUnits and DataUnits
+ * `Data map[string]interface{}` - Used to store application data to be returned to the server
 
 Packet Structure
 ----------------

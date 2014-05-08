@@ -56,15 +56,15 @@ func cHandle(c *net.TCPConn) {
       case 0x03:
         err = e.Encode(qomp.Packet{ID:0x04, Prog:qomp.Program{0}})
       case 0x05:
-        err = e.Encode(qomp.Packet{ID:0x06, Work:qomp.WorkUnit{0,1,2000}})
+        err = e.Encode(qomp.Packet{ID:0x06, Work:qomp.WorkUnit{0,map[string]interface{}{"Start": 1,"End": 2000}}})
       case 0x07:
         if p.Rate > 0 {
           wRate = p.Rate
         }
         fmt.Println(wRate)
-        err = e.Encode(qomp.Packet{ID:0x0A, Work:qomp.WorkUnit{0,1,wRate}})
+        err = e.Encode(qomp.Packet{ID:0x0A, Work:qomp.WorkUnit{0,map[string]interface{}{"Start": 1,"End": wRate}}})
       case 0x0B:
-        err = e.Encode(qomp.Packet{ID:0x0A, Work:qomp.WorkUnit{0,1,wRate}})
+        err = e.Encode(qomp.Packet{ID:0x0A, Work:qomp.WorkUnit{0,map[string]interface{}{"Start": 1,"End": 2000}}})
       case 0x0D:
         return
     }
